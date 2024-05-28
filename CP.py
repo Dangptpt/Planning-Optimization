@@ -24,20 +24,27 @@ def solve(N, m, M, fields):
 
 
     if status == cp_model.OPTIMAL:
-        print('Total harvested =', int(solver.ObjectiveValue()))
+        # print('Total harvested =', int(solver.ObjectiveValue()))
         harvested_fields = [(i+1, j) for i in range(N) for j in range(fields[i][1], fields[i][2] + 1) if solver.Value(x[(i, j)]) > 0]
-        print('Num of field(s):',len(harvested_fields))
-        days_2=set(x[1] for x in harvested_fields)
-        print("Total day(s):",len(days_2))
+        #print('Num of field(s):',len(harvested_fields))
+        print (len(harvested_fields))
+        for field, day in harvested_fields:
+            print(field, day)
+        days_2 = set(x[1] for x in harvested_fields)
+        #print("Total day(s):",len(days_2))
         # for field, day in harvested_fields:
         #     print(field, day)
     else:
         print('The problem does not have an optimal solution.')
-    print("\nStatistics")
-    print(f"  status   : {solver.status_name(status)}")
-    print(f"  conflicts: {solver.num_conflicts}")
-    print(f"  branches : {solver.num_branches}")
-    print(f"  wall time: {solver.wall_time} s")
+
+
+    # print("\nStatistics")
+    # print(f"  status   : {solver.status_name(status)}")
+    # print(f"  conflicts: {solver.num_conflicts}")
+    # print(f"  branches : {solver.num_branches}")
+    # print(f"  wall time: {solver.wall_time} s")
+
+
 with open('test.inp', 'r') as file:
     data = file.read()
 

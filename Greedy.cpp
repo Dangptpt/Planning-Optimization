@@ -1,64 +1,87 @@
-#include <iostream>
-#include <vector>
+// Date created: "10:41:14, 28-05-2024"
+// Code by Dangptpt_
+#include<bits/stdc++.h>
 
 using namespace std;
 
-const int MAXN = 10000;
+#define fi first
+#define se second
+#define pb push_back
 
-int n, m, M;
-vector<int> d, s, e;
-vector<int> x; // thu hoach hay chua
-int dsday[10000]; // ngay chon
-int tmp = 0;
-bool check(int i, int sum, int day){
-	if(x[i] == 1) return false;
-	if(sum > M) return false;
-	if(day < s[i] || day > e[i]) return false;
-	return true;  
+typedef long long LL;
+typedef unsigned long long ULL;
+typedef pair <int, int> II;
+
+template <typename T> void read(T &t) {
+    t = 0; char ch = getchar(); int f = 1;
+    while (!isdigit(ch)) { if (ch == '-') f = -1; ch = getchar(); }
+    do { (t *= 10) += ch - '0'; ch = getchar(); } while (isdigit(ch)); t *= f;
 }
 
-void Try(int sum, int day) {
-	for(int i = 1; i <= n; i++){
-		if(check(i, sum + d[i], day)){
-			x[i] = 1;
-			dsday[i] = day;
-			sum += d[i];
-			if(i==n){
-				Try(sum, day);
-			}			
-		}		
-	}
+const int MAXN = 1 + 1e6;
+const int mod = 1e9 + 7;
+const int inf = 0x3f3f3f3f;
+
+int n, m, M, d[10001], s[10001], e[10001], max_day, res, mark[10001];
+
+void InOut() {
+    #define TASK "test"
+    freopen(TASK ".inp", "r", stdin);
+    //freopen(TASK ".out", "w", stdout);
+}
+
+bool check(int i, int sum, int day){
+	if (mark[i] != 0) 
+        return 0;
+	if (sum > M) 
+        return 0;
+	if (day < s[i] || day > e[i]) 
+        return 0;
+	return 1;  
+}
+
+void Solve() {
+    cin >> n >> m >> M;
+    for (int i=1; i<=n; ++i) {
+        cin >> d[i] >> s[i] >> e[i];
+        max_day = max(max_day, e[i]);
+        mark[i] = 0;
+    }
+
+    for (int day=1; day<=max_day; ++day) {
+        int sum = 0;
+        vector<int> tmp;
+        for (int i=1; i<=n; ++i) {
+            if (check(i, sum + d[i], day) == 1) {
+                mark[i]  = day;
+                sum += d[i];
+                tmp.push_back(i);
+            }       
+        }
+        if (sum < m) {
+            for (int i=0; i<tmp.size(); ++i) {
+                mark[tmp[i]] = 0;
+            }
+        }
+    }
+
+    for (int i=1; i<=n; ++i) {
+        if (mark[i] != 0) 
+            res++;  
+        //cout << mark[i] << '\n';
+    }
+    cout << res << '\n';
+    for (int i=1; i<=n; ++i) {
+        if (mark[i] != 0) 
+            cout << i << ' ' << mark[i] << '\n';
+    }
 }
 
 int main() {
-  #define TASK "test"
-  freopen(TASK ".inp", "r", stdin);
-  //freopen(TASK ".out", "w", stdout);
-  cin >> n >> m >> M;
-  d.resize(n + 1);
-  s.resize(n + 1);
-  e.resize(n + 1);
-  x.resize(n + 1);
-  int dmin = 99999, dmax = 0;
-  for (int i = 1; i <= n; i++) {
-    cin >> d[i] >> s[i] >> e[i];
-    if(s[i] < dmin) dmin = s[i];
-    if(e[i] > dmax) dmax = e[i];
-    x[i] = 0;
-  }
-  for(int i = 1; i<=n; i++){
-  	dsday[i] = 0;
-  }
-  
-  for(int f=dmin; f<=dmax;f++) Try(0, f);
-  int res = 0;
-  for(int i=1; i<=n;i++){
-  	res += x[i];
-  }
-  cout << res << endl;
-  for (int i = 1; i <= n; i++) {
-  	if(dsday[i] == 0) dsday[i] = -1;
-    if(dsday[i] != -1) cout << i << " " << dsday[i] << '\n';
-  }
-  return 0;
+    InOut();
+    ios_base::sync_with_stdio(false);
+    cin.tie(0);
+    cout.tie(0);
+    Solve();
+    return 0;
 }

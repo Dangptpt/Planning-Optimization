@@ -22,6 +22,7 @@ const int MAXN = 1 + 1e6;
 const int mod = 1e9 + 7;
 const int inf = 0x3f3f3f3f;
 
+
 int n, m, M, d[101], s[10001], e[10001], harvested[10001], max_day, current, res, max_havested, n_fields, mark[1001];
 
 vector <II> ans;
@@ -54,11 +55,11 @@ void Try (int k) {
             current -= d[k];
             harvested[v] -= d[k];
         }
-    }
+    }                                                                                                                                                                                                                               
 }
 
 void InOut() {
-    #define TASK "ABC"
+    #define TASK "test"
     freopen(TASK ".inp", "r", stdin);
     //freopen(TASK ".out", "w", stdout);
 }

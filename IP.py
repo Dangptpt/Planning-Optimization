@@ -1,6 +1,7 @@
 from ortools.sat.python import cp_model
 from ortools.linear_solver import pywraplp
 
+
 def solve(N, m, M, fields):
     solver = pywraplp.Solver.CreateSolver('SAT')
     x, y = {}, {}
@@ -15,7 +16,7 @@ def solve(N, m, M, fields):
     for j in range(1, max(e for d, s, e in fields) + 1):
         solver.Add(sum([x[(i, j)] * fields[i][0] for i in range(N) if j >= fields[i][1] and j <= fields[i][2]]) <= M * y[j])
         solver.Add(sum([x[(i, j)] * fields[i][0] for i in range(N) if j >= fields[i][1] and j <= fields[i][2]]) >= m * y[j])
-
+        
     objective = sum([x[(i, j)] * fields[i][0] for i in range(N) for j in range(fields[i][1], fields[i][2] + 1)])
     solver.Maximize(objective)
 
