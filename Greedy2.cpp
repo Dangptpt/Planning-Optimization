@@ -35,7 +35,7 @@ bool cmp (III a, III b) {
     else return a.se.fi < b.se.fi;
 }
 void InOut() {
-    #define TASK "test"
+    #define TASK "test1000"
     freopen(TASK ".inp", "r", stdin);
     //freopen(TASK ".out", "w", stdout);
 }

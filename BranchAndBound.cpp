@@ -59,7 +59,7 @@ void Try (int k) {
 }
 
 void InOut() {
-    #define TASK "test"
+    #define TASK "test10"
     freopen(TASK ".inp", "r", stdin);
     //freopen(TASK ".out", "w", stdout);
 }

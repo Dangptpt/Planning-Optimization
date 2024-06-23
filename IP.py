@@ -1,4 +1,3 @@
-from ortools.sat.python import cp_model
 from ortools.linear_solver import pywraplp
 
 
@@ -13,7 +12,7 @@ def solve(N, m, M, fields):
     for i in range(N):
         solver.Add(sum([x[(i, j)] for j in range(fields[i][1], fields[i][2] + 1)]) <= 1)
         
-    for j in range(1, max(e for d, s, e in fields)):
+    for j in range(1, max(e for d, s, e in fields) + 1):
         solver.Add(sum([x[(i, j)] * fields[i][0] for i in range(N) if j >= fields[i][1] and j <= fields[i][2]]) <= M*y[j])
         solver.Add(sum([x[(i, j)] * fields[i][0] for i in range(N) if j >= fields[i][1] and j <= fields[i][2]]) >= m*y[j])
         
@@ -23,12 +22,12 @@ def solve(N, m, M, fields):
     status = solver.Solve()
 
     if status == pywraplp.Solver.OPTIMAL:
-        print('Total harvested =', int(solver.Objective().Value()))
+        print('Total harvested =', round(solver.Objective().Value()))
         harvested_fields = [(i+1, j) for i in range(N) for j in range(fields[i][1], fields[i][2] + 1) if x[(i, j)].solution_value() > 0]
         print('Num of field(s):',len(harvested_fields))
         days_2=set(x[1] for x in harvested_fields)
         print("Total day(s):",len(days_2))
-        # print (len(harvested_fields))
+        print (len(harvested_fields))
         # for field, day in harvested_fields:
         #     print(field, day)
     else:
@@ -40,7 +39,7 @@ def solve(N, m, M, fields):
     print(f"Problem solved in {solver.nodes():d} branch-and-bound nodes")
 
 
-with open('test.inp', 'r') as file:
+with open('test1000.inp', 'r') as file:
     data = file.read()
 
 lines = data.split('\n')

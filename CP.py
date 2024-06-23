@@ -1,5 +1,4 @@
 from ortools.sat.python import cp_model
-from ortools.linear_solver import pywraplp
 
 def solve(N, m, M, fields):
     model = cp_model.CpModel()
@@ -12,7 +11,7 @@ def solve(N, m, M, fields):
     for i in range(N):
         model.Add(sum([x[(i, j)] for j in range(fields[i][1], fields[i][2] + 1)]) <= 1)
         
-    for j in range(1, max(e for d, s, e in fields)):
+    for j in range(1, max(e for d, s, e in fields) + 1):
         model.Add(sum([x[(i, j)] * fields[i][0] for i in range(N) if j >= fields[i][1] and j <= fields[i][2]]) <= M*y[j]) 
         model.Add(sum([x[(i, j)] * fields[i][0] for i in range(N) if j >= fields[i][1] and j <= fields[i][2]]) >= m*y[j])
 
@@ -24,7 +23,7 @@ def solve(N, m, M, fields):
 
 
     if status == cp_model.OPTIMAL:
-        print('Total harvested =', int(solver.ObjectiveValue()))
+        print('Total harvested =', round(solver.ObjectiveValue()))
         harvested_fields = [(i+1, j) for i in range(N) for j in range(fields[i][1], fields[i][2] + 1) if solver.Value(x[(i, j)]) > 0]
         print('Num of field(s):',len(harvested_fields))
         print (len(harvested_fields))
@@ -42,8 +41,7 @@ def solve(N, m, M, fields):
     print(f"  branches : {solver.num_branches}")
     print(f"  wall time: {solver.wall_time} s")
 
-
-with open('test.inp', 'r') as file:
+with open('test1000.inp', 'r') as file:
     data = file.read()
 
 lines = data.split('\n')
