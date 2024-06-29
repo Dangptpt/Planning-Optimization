@@ -39,7 +39,7 @@ def solve(N, m, M, fields):
     print(f"Problem solved in {solver.nodes():d} branch-and-bound nodes")
 
 
-with open('test1000.inp', 'r') as file:
+with open('../Test/test1000.inp', 'r') as file:
     data = file.read()
 
 lines = data.split('\n')

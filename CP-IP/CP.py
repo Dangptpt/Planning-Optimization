@@ -41,7 +41,7 @@ def solve(N, m, M, fields):
     print(f"  branches : {solver.num_branches}")
     print(f"  wall time: {solver.wall_time} s")
 
-with open('test1000.inp', 'r') as file:
+with open('../Test/test1000.inp', 'r') as file:
     data = file.read()
 
 lines = data.split('\n')
