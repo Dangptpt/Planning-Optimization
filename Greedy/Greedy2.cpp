@@ -35,7 +35,7 @@ bool cmp (III a, III b) {
     else return a.se.fi < b.se.fi;
 }
 void InOut() {
-    #define TASK "../Test/test1000"
+    #define TASK "../Test/test5000_5000"
     freopen(TASK ".inp", "r", stdin);
     //freopen(TASK ".out", "w", stdout);
 }
@@ -82,7 +82,7 @@ void Solve() {
             total += p[i].fi;  
         }
     }
-    cout << res << '\n' << total;
+    cout << "Total harvested: " << res << '\n' << "Num of fields: " << total;
     // for (int i=1; i<=n; ++i) {
     //     if (mark[i] != 0) 
     //         cout << i << ' ' << mark[i] << '\n';

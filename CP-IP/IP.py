@@ -27,7 +27,7 @@ def solve(N, m, M, fields):
         print('Num of field(s):',len(harvested_fields))
         days_2=set(x[1] for x in harvested_fields)
         print("Total day(s):",len(days_2))
-        print (len(harvested_fields))
+        # print (len(harvested_fields))
         # for field, day in harvested_fields:
         #     print(field, day)
     else:
@@ -39,7 +39,7 @@ def solve(N, m, M, fields):
     print(f"Problem solved in {solver.nodes():d} branch-and-bound nodes")
 
 
-with open('../Test/test1000.inp', 'r') as file:
+with open('Test/test100_100.inp', 'r') as file:
     data = file.read()
 
 lines = data.split('\n')

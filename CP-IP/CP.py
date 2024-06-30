@@ -10,8 +10,9 @@ def solve(N, m, M, fields):
 
     for i in range(N):
         model.Add(sum([x[(i, j)] for j in range(fields[i][1], fields[i][2] + 1)]) <= 1)
-        
-    for j in range(1, max(e for d, s, e in fields) + 1):
+    min_day = min(fields[i][1] for i in range(N))
+    max_day = max(fields[i][2] for i in range(N))
+    for j in range(min_day, max_day + 1):
         model.Add(sum([x[(i, j)] * fields[i][0] for i in range(N) if j >= fields[i][1] and j <= fields[i][2]]) <= M*y[j]) 
         model.Add(sum([x[(i, j)] * fields[i][0] for i in range(N) if j >= fields[i][1] and j <= fields[i][2]]) >= m*y[j])
 
@@ -41,7 +42,7 @@ def solve(N, m, M, fields):
     print(f"  branches : {solver.num_branches}")
     print(f"  wall time: {solver.wall_time} s")
 
-with open('../Test/test1000.inp', 'r') as file:
+with open('Test/test100_100.inp', 'r') as file:
     data = file.read()
 
 lines = data.split('\n')
