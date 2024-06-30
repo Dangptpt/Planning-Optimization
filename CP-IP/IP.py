@@ -2,17 +2,23 @@ from ortools.linear_solver import pywraplp
 
 
 def solve(N, m, M, fields):
+    min_day = min(s for d, s, e in fields)
+    max_day = max(e for d, s, e in fields)
+
     solver = pywraplp.Solver.CreateSolver('SCIP')
     x, y = {}, {}
     for i in range(N):
         for j in range(fields[i][1], fields[i][2] + 1):
             x[(i, j)] = solver.IntVar(0, 1, f'x[{i},{j}]')
-            y[j] = solver.IntVar(0, 1, f'y[{j}]')
+
+    for i in range(min_day, max_day + 1):
+        y[i] = solver.IntVar(0, 1, f'y[{i}]')
 
     for i in range(N):
         solver.Add(sum([x[(i, j)] for j in range(fields[i][1], fields[i][2] + 1)]) <= 1)
-        
-    for j in range(1, max(e for d, s, e in fields) + 1):
+
+
+    for j in range(min_day, max_day + 1):
         solver.Add(sum([x[(i, j)] * fields[i][0] for i in range(N) if j >= fields[i][1] and j <= fields[i][2]]) <= M*y[j])
         solver.Add(sum([x[(i, j)] * fields[i][0] for i in range(N) if j >= fields[i][1] and j <= fields[i][2]]) >= m*y[j])
         
@@ -39,7 +45,7 @@ def solve(N, m, M, fields):
     print(f"Problem solved in {solver.nodes():d} branch-and-bound nodes")
 
 
-with open('Test/test100_100.inp', 'r') as file:
+with open('Test/test5000_200.inp', 'r') as file:
     data = file.read()
 
 lines = data.split('\n')

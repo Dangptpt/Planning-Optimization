@@ -2,16 +2,19 @@ from ortools.sat.python import cp_model
 
 def solve(N, m, M, fields):
     model = cp_model.CpModel()
+    min_day = min(s for d, s, e in fields)
+    max_day = max(e for d, s, e in fields)
     x, y = {}, {}
     for i in range(N):
         for j in range(fields[i][1], fields[i][2] + 1):
             x[(i, j)] = model.NewIntVar(0, 1, f'x[{i},{j}]')
-            y[j] = model.NewIntVar(0, 1, f'y[{j}]')
+
+    for i in range(min_day, max_day + 1):
+        y[i] = model.NewIntVar(0, 1, f'y[{i}]')
 
     for i in range(N):
         model.Add(sum([x[(i, j)] for j in range(fields[i][1], fields[i][2] + 1)]) <= 1)
-    min_day = min(fields[i][1] for i in range(N))
-    max_day = max(fields[i][2] for i in range(N))
+
     for j in range(min_day, max_day + 1):
         model.Add(sum([x[(i, j)] * fields[i][0] for i in range(N) if j >= fields[i][1] and j <= fields[i][2]]) <= M*y[j]) 
         model.Add(sum([x[(i, j)] * fields[i][0] for i in range(N) if j >= fields[i][1] and j <= fields[i][2]]) >= m*y[j])
@@ -42,7 +45,7 @@ def solve(N, m, M, fields):
     print(f"  branches : {solver.num_branches}")
     print(f"  wall time: {solver.wall_time} s")
 
-with open('Test/test100_100.inp', 'r') as file:
+with open('Test/test5000_200.inp', 'r') as file:
     data = file.read()
 
 lines = data.split('\n')

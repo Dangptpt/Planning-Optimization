@@ -9,14 +9,14 @@ def generate_test_case(filename, N):
     fields = []
     total = 0;
     for i in range(N):
-        d = random.randint(1, 100)
-        s = random.randint(1, 950)
+        d = random.randint(1, 10)
+        s = random.randint(1, 7)
         # e must be >= s
-        e = s + random.randint(1, 50)  
+        e = s + random.randint(1, 3)  
         fields.append((d, s, e))
         total += d
-    m = random.randint(50, 200)
-    M = random.randint(m, 500)
+    m = random.randint(5, 10)
+    M = random.randint(m, 30)
     min_day = min([field[1] for field in fields])
     max_day = max([field[2] for field in fields])
     print(total, min_day, max_day)
@@ -27,5 +27,5 @@ def generate_test_case(filename, N):
             f.write(f"{field[0]} {field[1]} {field[2]}\n")
 
 # Generate a test case and save it to a file
-generate_test_case('Test/test100_1.inp', 100)
+generate_test_case('Test/test15_10.inp', 15)
 
