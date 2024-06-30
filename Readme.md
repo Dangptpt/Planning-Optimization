@@ -1,4 +1,4 @@
-# TỐI ƯU LẬP KẾ HOẠCH: HARVERST PLANNING
+# TỐI ƯU LẬP KẾ HOẠCH: HARVEST PLANNING
 
 ## **Input**:
 * N: số cánh đồng
