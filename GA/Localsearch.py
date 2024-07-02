@@ -71,7 +71,7 @@ class LocalSearch:
             total_harvest += self.fields[i][0]
 
         for harvest in daily_harvest.values():
-            if harvest < self.m or harvest > self.M:
+            if  harvest > self.M:
                 return 0,
 
         return total_harvest,
