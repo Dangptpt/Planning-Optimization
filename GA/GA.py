@@ -68,32 +68,21 @@ class GA:
             return individual1
         return offspring
 
-
     def generate_population(self, N, fields, population_size, m, M):
-        population = set()
-        attempts = 0
-        max_days = max(e for _, s, e in fields) + 1
-
-        while len(population) < population_size and attempts < 10 * population_size:
-            individual = [-1] * N
-            daily_harvest = [0] * max_days
+        population = []
+        for _ in range(population_size):
+            individual = [0] * N
+            daily_harvest = [0] * (max(e for _, s, e in fields) + 1)
 
             for i in range(N):
-                possible_days = [day for day in range(fields[i][1], fields[i][2] + 1) if daily_harvest[day] + fields[i][0] <= M]
-                if possible_days:
-                    chosen_day = random.choice(possible_days)
-                    individual[i] = chosen_day
-                    daily_harvest[chosen_day] += fields[i][0]
+                for day in range(fields[i][1], fields[i][2] + 1):
+                    if daily_harvest[day] + fields[i][0] <= M:
+                        individual[i] = day
+                        daily_harvest[day] += fields[i][0]
+                        break
 
-            # Ensure all fields are assigned a day and daily harvest constraints are satisfied
-            if all(day != -1 for day in individual) and all(m <= daily_harvest[day] <= M for day in range(len(daily_harvest)) if daily_harvest[day] > 0):
-                print(individual_tuple)
-                individual_tuple = tuple(individual)
-                if individual_tuple not in population:
-                    population.add(individual_tuple)
-
-
-        return [list(ind) for ind in population]
+            population.append(individual)
+        return population
 
     def select_parents(self, population):
         parent1 = random.choices(population, k=1)[0]
@@ -108,7 +97,6 @@ class GA:
     def solve(self, N, m, M, fields):
         t_begin = time.time()
         population = self.generate_population(N, fields, self.pop_size, m, M)
-        print(len(population))
         best_individual = None
         best_fitness = float('inf')
         log1 = []
@@ -119,7 +107,6 @@ class GA:
             population_with_fitness = list(zip(population, fitness_scores))
             population_with_fitness.sort(key=lambda x: x[1], reverse=True)
             population = [ind for ind, fitness in population_with_fitness]
-            print(population)
             tmp = self.fitness_function_individual(population[0], N, m, M, fields)
             if tmp[0] < best_fitness:
                 best_individual = population[0]
@@ -159,7 +146,7 @@ def read_input(file_path):
 
 # Example usage
 N, m, M, fields = read_input('test.inp')
-ga = GA(pop_size=10, num_generations=10, mutation_probability=0.1, local_search_prob=0.0, keep_rate=0.5, time_limit=60)
+ga = GA(pop_size=500, num_generations=1000, mutation_probability=0.1, local_search_prob=0.0, keep_rate=0.5, time_limit=60)
 best_individual, log1, log2 = ga.solve(N, m, M, fields)
 print("Best individual:", best_individual)
 print("Log1:", log1)

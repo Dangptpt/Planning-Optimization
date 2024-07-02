@@ -25,7 +25,7 @@ const int inf = 0x3f3f3f3f;
 int n, m, M, d[10001], s[10001], e[10001], max_day, res, mark[10001];
 
 void InOut() {
-    #define TASK "../Test/test1000_1000"
+    #define TASK "../Test/test100_100"
     freopen(TASK ".inp", "r", stdin);
     //freopen(TASK ".out", "w", stdout);
 }

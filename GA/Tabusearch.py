@@ -96,38 +96,76 @@ class TabuSearch:
 
         return best_solution
 
-# Reading input from a file
 def read_input(file_path):
     with open(file_path, 'r') as file:
         data = file.read()
 
     lines = data.split('\n')
-    N, m, M = map(int, lines[0].split())
+    n, m, M = map(int, lines[0].split())
     fields = []
     for line in lines[1:]:
         if line.strip():
             d, s, e = map(int, line.split())
             fields.append((d, s, e))
-    return N, m, M, fields
+    return n, m, M, fields
 
-def generate(N, fields, m, M):
-    individual = [0] * N
-    daily_harvest = [0] * (max(e for _, s, e in fields) + 1)
+def check(i, sum, day, mark, d, s, e, M):
+    if mark[i] != 0:
+        return False
+    if sum > M:
+        return False
+    if day < s[i] or day > e[i]:
+        return False
+    return True
 
-    for i in range(N):
-        for day in range(fields[i][1], fields[i][2] + 1):
-            if daily_harvest[day] + fields[i][0] <= M:
-                individual[i] = day
-                daily_harvest[day] += fields[i][0]
-                break
-    return individual
+def greedy(n, m, M, d, s, e):
+    max_day = 0
+    mark = [0] * (n + 1)
+
+    for i in range(1, n + 1):
+        max_day = max(max_day, e[i])
+
+    # Giai đoạn 1: Đảm bảo sản lượng hàng ngày đạt ít nhất m
+    for day in range(1, max_day + 1):
+        sum = 0
+        tmp = []
+        for i in range(1, n + 1):
+            if check(i, sum + d[i], day, mark, d, s, e, M) and sum < m:
+                mark[i] = day
+                sum += d[i]
+                tmp.append(i)
+        if sum < m:
+            for i in tmp:
+                mark[i] = 0
+
+    # Giai đoạn 2: Tăng sản lượng hàng ngày nếu có thể
+    for day in range(1, max_day + 1):
+        sum = 0
+        for i in range(1, n + 1):
+            if mark[i] == day:
+                sum += d[i]
+
+        for i in range(1, n + 1):
+            if check(i, sum + d[i], day, mark, d, s, e, M) and mark[i] == 0:
+                mark[i] = day
+                sum += d[i]
+
+    solution = [mark[i] for i in range(1, n + 1)]
+    return solution
 
 # Example usage
-N, m, M, fields = read_input('test.inp')
+N, m, M, fields = read_input(r'D:\school\TULKH\Planning-Optimization\Test\test100_100.inp')
+d = [0] * (N + 1)
+s = [0] * (N + 1)
+e = [0] * (N + 1)
 
-initial_solution = generate(N, fields, m, M)
+for i in range(N):
+    d[i + 1], s[i + 1], e[i + 1] = fields[i]
+
+initial_solution = greedy(N, m, M, d, s, e)
 tabu_search = TabuSearch(tabu_size=10, max_iterations=1000, N=N, m=m, M=M, fields=fields)
 best_solution = tabu_search.tabu_search(initial_solution)
 best_fitness = tabu_search.fitness_function(best_solution)[0]
+
 print("Best solution:", best_solution)
 print("Best fitness:", best_fitness)
