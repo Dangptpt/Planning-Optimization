@@ -65,14 +65,17 @@ class LocalSearch:
 
         for i in range(self.N):
             day = solution[i]
-            if day not in daily_harvest:
-                daily_harvest[day] = 0
-            daily_harvest[day] += self.fields[i][0]
-            total_harvest += self.fields[i][0]
+            if day !=0:
+                if day not in daily_harvest:
+                    daily_harvest[day] = 0
+                daily_harvest[day] += self.fields[i][0]
+            # total_harvest += self.fields[i][0]
 
         for harvest in daily_harvest.values():
-            if  harvest > self.M:
-                return 0,
+            if harvest < self.m or harvest > self.M:
+                # Nếu thu hoạch không hợp lệ, đặt sản lượng của ngày đó thành 0
+                continue
+            total_harvest += harvest
 
         return total_harvest,
 
@@ -97,9 +100,9 @@ class LocalSearch:
                 daily_harvest[day] = 0
             daily_harvest[day] += self.fields[i][0]
 
-        for harvest in daily_harvest.values():
-            if harvest < self.m or harvest > self.M:
-                return False
+        # for harvest in daily_harvest.values():
+        #     if harvest < self.m or harvest > self.M:
+        #         return False
         return True
 
     def local_search(self, initial_solution):

@@ -4,18 +4,17 @@ from ortools.linear_solver import pywraplp
 
 def solve(N, m, M, fields):
     solver = pywraplp.Solver.CreateSolver('SAT')
-    x, y = {}, {}
+    x = {}
     for i in range(N):
         for j in range(fields[i][1], fields[i][2] + 1):
             x[(i, j)] = solver.IntVar(0, 1, f'x[{i},{j}]')
-            y[j] = solver.IntVar(0, 1, f'y[{j}]')
 
     for i in range(N):
         solver.Add(sum([x[(i, j)] for j in range(fields[i][1], fields[i][2] + 1)]) <= 1)
         
     for j in range(1, max(e for d, s, e in fields) + 1):
-        solver.Add(sum([x[(i, j)] * fields[i][0] for i in range(N) if j >= fields[i][1] and j <= fields[i][2]]) <= M * y[j])
-        solver.Add(sum([x[(i, j)] * fields[i][0] for i in range(N) if j >= fields[i][1] and j <= fields[i][2]]) >= m * y[j])
+        solver.Add(sum([x[(i, j)] * fields[i][0] for i in range(N) if j >= fields[i][1] and j <= fields[i][2]]) <= M)
+        solver.Add(sum([x[(i, j)] * fields[i][0] for i in range(N) if j >= fields[i][1] and j <= fields[i][2]]) >= m)
         
     objective = sum([x[(i, j)] * fields[i][0] for i in range(N) for j in range(fields[i][1], fields[i][2] + 1)])
     solver.Maximize(objective)
@@ -25,11 +24,13 @@ def solve(N, m, M, fields):
     if status == pywraplp.Solver.OPTIMAL:
         print('Total harvested =', int(solver.Objective().Value()))
         harvested_fields = [(i+1, j) for i in range(N) for j in range(fields[i][1], fields[i][2] + 1) if x[(i, j)].solution_value() > 0]
-        print('Num of field(s):',len(harvested_fields))
-        days_2=set(x[1] for x in harvested_fields)
-        print("Total day(s):",len(days_2))
-        # for field, day in harvested_fields:
-        #     print(field, day)
+        print('Num of field(s):', len(harvested_fields))
+        days_set = set(j for _, j in harvested_fields)
+        print("Total day(s):", len(days_set))
+        
+        print("\nHarvested fields details:")
+        for field, day in harvested_fields:
+            print(f"Field {field}: Harvested on day {day}")
     else:
         print('The problem does not have an optimal solution.')
 
@@ -51,6 +52,6 @@ def read_input(file_path):
     return N, m, M, fields
 
 # Example usage
-N, m, M, fields = read_input('test.inp')
+N, m, M, fields = read_input(r'D:\school\TULKH\Planning-Optimization\Test\test1000_50.inp')
 
 solve(N, m, M, fields)

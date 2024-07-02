@@ -23,17 +23,19 @@ class TabuSearch:
 
         for i in range(self.N):
             day = solution[i]
-            if day not in daily_harvest:
-                daily_harvest[day] = 0
-            daily_harvest[day] += self.fields[i][0]
-            total_harvest += self.fields[i][0]
+            if day !=0:
+                if day not in daily_harvest:
+                    daily_harvest[day] = 0
+                daily_harvest[day] += self.fields[i][0]
+            # total_harvest += self.fields[i][0]
 
         for harvest in daily_harvest.values():
-            if harvest > self.M:
-                return 0,
+            if harvest < self.m or harvest > self.M:
+                # Nếu thu hoạch không hợp lệ, đặt sản lượng của ngày đó thành 0
+                continue
+            total_harvest += harvest
 
         return total_harvest,
-
     def get_valid_neighbors(self, solution):
         neighbors = []
         for i in range(self.N):
@@ -55,9 +57,9 @@ class TabuSearch:
                 daily_harvest[day] = 0
             daily_harvest[day] += self.fields[i][0]
 
-        for harvest in daily_harvest.values():
-            if harvest < self.m or harvest > self.M:
-                return False
+        # for harvest in daily_harvest.values():
+        #     if harvest < self.m or harvest > self.M:
+        #         return False
         return True
 
     def tabu_search(self, initial_solution):
@@ -152,7 +154,7 @@ def greedy(n, m, M, d, s, e):
 
 # Example usage
 def main():
-    file_path = r'D:\school\TULKH\Planning-Optimization\Test\test100_100.inp'
+    file_path = r'D:\school\TULKH\Planning-Optimization\Test\test1000_50.inp'
     N, m, M, fields = read_input(file_path)
     d = [0] * (N + 1)
     s = [0] * (N + 1)

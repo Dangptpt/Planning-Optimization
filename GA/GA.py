@@ -26,14 +26,15 @@ class GA:
 
         for i in range(N):
             day = individual[i]
-            if day not in daily_harvest:
-                daily_harvest[day] = 0
-            daily_harvest[day] += fields[i][0]
-            total_harvest += fields[i][0]
-
+            if day !=0:
+                if day not in daily_harvest:
+                    daily_harvest[day] = 0
+                daily_harvest[day] += fields[i][0]
         for harvest in daily_harvest.values():
             if harvest < m or harvest > M:
-                return 0,
+                # Nếu thu hoạch không hợp lệ, đặt sản lượng của ngày đó thành 0
+                continue
+            total_harvest += harvest
 
         return total_harvest,
 
@@ -68,21 +69,35 @@ class GA:
             return individual1
         return offspring
 
+
     def generate_population(self, N, fields, population_size, m, M):
-        population = []
-        for _ in range(population_size):
-            individual = [0] * N
-            daily_harvest = [0] * (max(e for _, s, e in fields) + 1)
+        population = set()
 
-            for i in range(N):
-                for day in range(fields[i][1], fields[i][2] + 1):
-                    if daily_harvest[day] + fields[i][0] <= M:
-                        individual[i] = day
-                        daily_harvest[day] += fields[i][0]
-                        break
+        # Generate some individuals using greedy
+        while len(population) < population_size // 2:
+            individual = self.generate_greedy_individual(N, fields, m, M)
+            population.add(tuple(individual))
 
-            population.append(individual)
-        return population
+        # Generate other individuals as mutations of greedy individuals
+        while len(population) < population_size:
+            greedy_individual = self.generate_greedy_individual(N, fields, m, M)
+            mutated_individual = self.mutate(greedy_individual, N, m, M, fields)
+            population.add(tuple(mutated_individual))
+
+        return [list(ind) for ind in population]
+
+    def generate_greedy_individual(self, N, fields, m, M):
+        individual = [-1] * N
+        daily_harvest = [0] * (max(e for _, s, e in fields) + 1)
+
+        for i in range(N):
+            possible_days = [day for day in range(fields[i][1], fields[i][2] + 1) if daily_harvest[day] + fields[i][0] <= M]
+            if possible_days:
+                chosen_day = random.choice(possible_days)
+                individual[i] = chosen_day
+                daily_harvest[chosen_day] += fields[i][0]
+
+        return individual
 
     def select_parents(self, population):
         parent1 = random.choices(population, k=1)[0]
