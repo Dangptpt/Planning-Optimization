@@ -1,12 +1,11 @@
-
-
-
 import numpy as np
 import random
 import time
 
+# Định nghĩa lớp GA (Genetic Algorithm)
 class GA:
     def __init__(self, pop_size, num_generations, mutation_probability, local_search_prob, keep_rate, time_limit):
+        # Khởi tạo các tham số cho thuật toán di truyền
         self.pop_size = pop_size
         self.num_generations = num_generations
         self.mutation_probability = mutation_probability
@@ -15,18 +14,21 @@ class GA:
         self.time_limit = time_limit
 
     def decode(self, individual, N):
+        # Giải mã cá thể (individual)
         return individual
 
     def encode(self, routes):
+        # Mã hóa lại các lộ trình
         return routes
 
     def fitness_function_individual(self, individual, N, m, M, fields):
+        # Hàm tính toán độ thích nghi cho một cá thể
         daily_harvest = {}
         total_harvest = 0
 
         for i in range(N):
             day = individual[i]
-            if day !=0:
+            if day != 0:
                 if day not in daily_harvest:
                     daily_harvest[day] = 0
                 daily_harvest[day] += fields[i][0]
@@ -39,6 +41,7 @@ class GA:
         return total_harvest,
 
     def mutate(self, individual, N, m, M, fields):
+        # Hàm đột biến cho cá thể
         if random.uniform(0, 1) < self.mutation_probability:
             start = random.randint(0, len(individual) - 1)
             end = random.randint(0, len(individual) - 1)
@@ -52,6 +55,7 @@ class GA:
             return individual
 
     def ox_crossover(self, individual1, individual2, N, m, M, fields):
+        # Hàm lai ghép (crossover)
         cut1 = random.randint(0, len(individual1) - 1)
         cut2 = random.randint(0, len(individual1) - 1)
         if cut1 > cut2:
@@ -69,16 +73,16 @@ class GA:
             return individual1
         return offspring
 
-
     def generate_population(self, N, fields, population_size, m, M):
+        # Hàm tạo quần thể ban đầu
         population = set()
 
-        # Generate some individuals using greedy
+        # Tạo một số cá thể bằng cách sử dụng thuật toán tham lam
         while len(population) < population_size // 2:
             individual = self.generate_greedy_individual(N, fields, m, M)
             population.add(tuple(individual))
 
-        # Generate other individuals as mutations of greedy individuals
+        # Tạo các cá thể khác bằng cách đột biến các cá thể tham lam
         while len(population) < population_size:
             greedy_individual = self.generate_greedy_individual(N, fields, m, M)
             mutated_individual = self.mutate(greedy_individual, N, m, M, fields)
@@ -87,6 +91,7 @@ class GA:
         return [list(ind) for ind in population]
 
     def generate_greedy_individual(self, N, fields, m, M):
+        # Hàm tạo cá thể tham lam
         individual = [-1] * N
         daily_harvest = [0] * (max(e for _, s, e in fields) + 1)
 
@@ -100,16 +105,19 @@ class GA:
         return individual
 
     def select_parents(self, population):
+        # Hàm chọn lọc cha mẹ từ quần thể
         parent1 = random.choices(population, k=1)[0]
         parent2 = random.choices(population, k=1)[0]
         return parent1, parent2
 
     def generate_offspring(self, individual1, individual2, N, m, M, fields):
+        # Hàm tạo con
         child = self.ox_crossover(individual1, individual2, N, m, M, fields)
         child = self.mutate(child, N, m, M, fields)
         return child
 
     def solve(self, N, m, M, fields):
+        # Hàm giải quyết bài toán
         t_begin = time.time()
         population = self.generate_population(N, fields, self.pop_size, m, M)
         best_individual = None
@@ -118,6 +126,7 @@ class GA:
         log2 = [1e9 for _ in range(10)]
 
         for generation in range(self.num_generations):
+            # Tính toán độ thích nghi cho mỗi cá thể
             fitness_scores = [self.fitness_function_individual(individual, N, m, M, fields) for individual in population]
             population_with_fitness = list(zip(population, fitness_scores))
             population_with_fitness.sort(key=lambda x: x[1], reverse=True)
@@ -145,7 +154,7 @@ class GA:
             population = next_population
         return best_individual, log1, log2
 
-# Reading input from a file
+# Đọc dữ liệu từ tệp
 def read_input(file_path):
     with open(file_path, 'r') as file:
         data = file.read()
@@ -159,8 +168,8 @@ def read_input(file_path):
             fields.append((d, s, e))
     return N, m, M, fields
 
-# Example usage
-N, m, M, fields = read_input(r'D:\school\TULKH\Planning-Optimization\Test\test5000_200.inp')
+# Ví dụ sử dụng
+N, m, M, fields = read_input('Test/test5000_200.inp')
 ga = GA(pop_size=500, num_generations=1000, mutation_probability=0.1, local_search_prob=0.0, keep_rate=0.5, time_limit=60)
 best_individual, log1, log2 = ga.solve(N, m, M, fields)
 print("Best individual:", best_individual)

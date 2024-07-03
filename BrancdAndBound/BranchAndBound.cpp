@@ -10,75 +10,77 @@ using namespace std;
 
 typedef long long LL;
 typedef unsigned long long ULL;
-typedef pair <int, int> II;
+typedef pair<int, int> II;
 
 template <typename T> void read(T &t) {
+    // Hàm đọc số nguyên từ đầu vào
     t = 0; char ch = getchar(); int f = 1;
     while (!isdigit(ch)) { if (ch == '-') f = -1; ch = getchar(); }
     do { (t *= 10) += ch - '0'; ch = getchar(); } while (isdigit(ch)); t *= f;
 }
 
-const int MAXN = 1 + 1e6;
-const int mod = 1e9 + 7;
-const int inf = 0x3f3f3f3f;
-
+const int MAXN = 1 + 1e6; // Giới hạn kích thước tối đa
+const int mod = 1e9 + 7;  // Số nguyên tố lớn dùng để lấy modulo
+const int inf = 0x3f3f3f3f; // Giá trị vô cực
 
 int n, m, M, d[101], s[10001], e[10001], harvested[10001], max_day, current, res, max_havested, n_fields, mark[1001];
+vector<II> ans; // Lưu kết quả cuối cùng
 
-vector <II> ans;
-
-bool check (int v, int k) {
+bool check(int v, int k) {
+    // Hàm kiểm tra điều kiện hợp lệ của một ô
     if (s[k] > v) return 0;
     if (e[k] < v) return 0;
     if (harvested[v] + d[k] < m || harvested[v] + d[k] > M) return 0;
     return 1;
 }
 
-void Try (int k) {
-    for (int v=1; v<=max_day; ++v) {
-        if (check (v, k) == 1) {
+void Try(int k) {
+    // Hàm thử tất cả các khả năng
+    for (int v = 1; v <= max_day; ++v) {
+        if (check(v, k) == 1) {
             harvested[v] += d[k];
-            //cout << harvested[v] << '\n';
             current += d[k];
             mark[k] = v;
             if (k == n) {
                 if (current > res) {
                     res = current;
                     ans.clear();
-                    for (int i=1; i<=n; ++i) {
+                    for (int i = 1; i <= n; ++i) {
                         ans.push_back({i, mark[i]});
                     }
                 }
+            } else if (current + (n - k) * max_havested > res) {
+                Try(k + 1);
             }
-            else if (current + (n-k)*max_havested > res) Try(k+1);
             mark[k] = -1;
             current -= d[k];
             harvested[v] -= d[k];
         }
-    }                                                                                                                                                                                                                               
+    }
 }
 
 void InOut() {
+    // Hàm mở tệp đầu vào và đầu ra
     #define TASK "../Test/test10"
     freopen(TASK ".inp", "r", stdin);
     //freopen(TASK ".out", "w", stdout);
 }
 
 void Solve() {
+    // Hàm giải bài toán
     cin >> n >> m >> M;
-    for (int i=1; i<=n; ++i) {
+    for (int i = 1; i <= n; ++i) {
         cin >> d[i] >> s[i] >> e[i];
         max_day = max(max_day, e[i]);
-        max_havested = max (max_havested, d[i]);
+        max_havested = max(max_havested, d[i]);
         mark[i] = 1;
     }
 
     Try(1);
 
-    for (auto v:ans) {
+    for (auto v : ans) {
         cout << v.first << " " << v.second << '\n';
     }
-    //cout << res;
 }
 
 int main() {

@@ -53,6 +53,6 @@ def read_input(file_path):
     return N, m, M, fields
 
 # Example usage
-N, m, M, fields = read_input(r'D:\school\TULKH\Planning-Optimization\Test\test10000_10000.inp')
+N, m, M, fields = read_input('Test/test5000_200.inp')
 
 solve(N, m, M, fields)

@@ -160,7 +160,7 @@ def greedy(n, m, M, d, s, e):
 
 # Ví dụ sử dụng
 def main():
-    file_path = r'D:\school\TULKH\Planning-Optimization\Test\test1000_50.inp'
+    file_path = 'Test/test5000_200.inp'
     N, m, M, fields = read_input(file_path)
     d = [0] * (N + 1)
     s = [0] * (N + 1)
