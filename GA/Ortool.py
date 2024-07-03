@@ -29,6 +29,7 @@ def solve(N, m, M, fields):
         print("Total day(s):", len(days_set))
         
         print("\nHarvested fields details:")
+        a = [0] * (N + 1)
         for field, day in harvested_fields:
             print(f"Field {field}: Harvested on day {day}")
     else:
@@ -52,6 +53,6 @@ def read_input(file_path):
     return N, m, M, fields
 
 # Example usage
-N, m, M, fields = read_input(r'D:\school\TULKH\Planning-Optimization\Test\test1000_50.inp')
+N, m, M, fields = read_input(r'D:\school\TULKH\Planning-Optimization\Test\test10000_10000.inp')
 
 solve(N, m, M, fields)

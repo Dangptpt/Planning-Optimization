@@ -2,8 +2,10 @@ import numpy as np
 import random
 import time
 
+# Định nghĩa lớp TabuSearch (Tìm kiếm Tabu)
 class TabuSearch:
     def __init__(self, tabu_size, max_iterations, N, m, M, fields):
+        # Khởi tạo các tham số cho thuật toán tìm kiếm Tabu
         self.tabu_size = tabu_size
         self.max_iterations = max_iterations
         self.N = N
@@ -12,22 +14,24 @@ class TabuSearch:
         self.fields = fields
 
     def decode(self, individual):
+        # Giải mã cá thể (ở đây chỉ trả về chính cá thể đó)
         return individual
 
     def encode(self, solution):
+        # Mã hóa lại giải pháp (ở đây cũng chỉ trả về chính giải pháp đó)
         return solution
 
     def fitness_function(self, solution):
+        # Hàm tính toán độ thích nghi cho một giải pháp
         daily_harvest = {}
         total_harvest = 0
 
         for i in range(self.N):
             day = solution[i]
-            if day !=0:
+            if day != 0:
                 if day not in daily_harvest:
                     daily_harvest[day] = 0
                 daily_harvest[day] += self.fields[i][0]
-            # total_harvest += self.fields[i][0]
 
         for harvest in daily_harvest.values():
             if harvest < self.m or harvest > self.M:
@@ -36,7 +40,9 @@ class TabuSearch:
             total_harvest += harvest
 
         return total_harvest,
+
     def get_valid_neighbors(self, solution):
+        # Hàm lấy các hàng xóm hợp lệ của một giải pháp
         neighbors = []
         for i in range(self.N):
             for day in range(self.fields[i][1], self.fields[i][2] + 1):
@@ -44,25 +50,23 @@ class TabuSearch:
                     neighbor = solution.copy()
                     neighbor[i] = day
 
-                    # Check if the neighbor is valid
+                    # Kiểm tra nếu hàng xóm là hợp lệ
                     if self.is_valid_neighbor(neighbor):
                         neighbors.append(neighbor)
         return neighbors
 
     def is_valid_neighbor(self, neighbor):
+        # Hàm kiểm tra nếu hàng xóm là hợp lệ
         daily_harvest = {}
         for i in range(self.N):
             day = neighbor[i]
             if day not in daily_harvest:
                 daily_harvest[day] = 0
             daily_harvest[day] += self.fields[i][0]
-
-        # for harvest in daily_harvest.values():
-        #     if harvest < self.m or harvest > self.M:
-        #         return False
         return True
 
     def tabu_search(self, initial_solution):
+        # Hàm thực hiện tìm kiếm Tabu
         current_solution = initial_solution
         best_solution = initial_solution
         tabu_list = []
@@ -98,7 +102,7 @@ class TabuSearch:
 
         return best_solution
 
-# Reading input from a file
+# Đọc dữ liệu từ tệp
 def read_input(file_path):
     with open(file_path, 'r') as file:
         data = file.read()
@@ -112,6 +116,7 @@ def read_input(file_path):
             fields.append((d, s, e))
     return n, m, M, fields
 
+# Hàm kiểm tra điều kiện hợp lệ của một ô
 def check(i, total_sum, day, mark, d, s, e, M):
     if mark[i] != 0:
         return False
@@ -121,6 +126,7 @@ def check(i, total_sum, day, mark, d, s, e, M):
         return False
     return True
 
+# Thuật toán tham lam để tạo giải pháp ban đầu
 def greedy(n, m, M, d, s, e):
     max_day = 0
     mark = [0] * (n + 1)
@@ -152,7 +158,7 @@ def greedy(n, m, M, d, s, e):
     
     return solution, fitness
 
-# Example usage
+# Ví dụ sử dụng
 def main():
     file_path = r'D:\school\TULKH\Planning-Optimization\Test\test1000_50.inp'
     N, m, M, fields = read_input(file_path)

@@ -160,7 +160,7 @@ def read_input(file_path):
     return N, m, M, fields
 
 # Example usage
-N, m, M, fields = read_input('test.inp')
+N, m, M, fields = read_input(r'D:\school\TULKH\Planning-Optimization\Test\test5000_200.inp')
 ga = GA(pop_size=500, num_generations=1000, mutation_probability=0.1, local_search_prob=0.0, keep_rate=0.5, time_limit=60)
 best_individual, log1, log2 = ga.solve(N, m, M, fields)
 print("Best individual:", best_individual)
